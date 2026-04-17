@@ -1,0 +1,9 @@
+{
+  "id": "simple-kanban",
+  "name": "Simple Kanban",
+  "version": "1.0.0",
+  "minAppVersion": "0.15.0",
+  "description": "Minimal Kanban board with Todo, In Progress, and Done columns.",
+  "author": "You",
+  "isDesktopOnly": false
+}
