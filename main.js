@@ -210,6 +210,54 @@ function createCard(app, text, col, cards, saveFn, rerender, sourcePath = '') {
   });
   card.addEventListener('dragend', () => { card.style.opacity = '1'; });
 
+  // Double-click to edit
+  card.addEventListener('dblclick', () => {
+    card.draggable = false;
+    card.empty();
+    card.style.padding = '6px';
+
+    const input = document.createElement('textarea');
+    input.value = text;
+    input.rows = 2;
+    input.style.cssText = `width:100%;padding:6px;border-radius:4px;border:1px solid ${C.accent};background:${bg};color:${textColor};resize:none;font-size:13px;box-sizing:border-box;outline:none;`;
+    card.appendChild(input);
+
+    const actions = document.createElement('div');
+    actions.style.cssText = 'display:flex;gap:6px;margin-top:4px;';
+
+    const saveBtn = document.createElement('button');
+    saveBtn.setText('Save');
+    saveBtn.style.cssText = `padding:3px 10px;background:${C.accent};color:${C.bg};border:none;border-radius:4px;cursor:pointer;font-size:12px;font-weight:600;`;
+
+    const cancelBtn = document.createElement('button');
+    cancelBtn.setText('Cancel');
+    cancelBtn.style.cssText = `padding:3px 8px;background:transparent;border:none;cursor:pointer;font-size:12px;color:${C.subtext};`;
+
+    actions.appendChild(saveBtn);
+    actions.appendChild(cancelBtn);
+    card.appendChild(actions);
+
+    input.focus();
+    input.setSelectionRange(input.value.length, input.value.length);
+
+    const finish = async (doSave) => {
+      const newText = input.value.trim();
+      if (doSave && newText && newText !== text) {
+        const idx = cards[col].indexOf(text);
+        if (idx !== -1) cards[col][idx] = newText;
+        await saveFn();
+      }
+      rerender();
+    };
+
+    saveBtn.addEventListener('click', () => finish(true));
+    cancelBtn.addEventListener('click', () => finish(false));
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); finish(true); }
+      if (e.key === 'Escape') finish(false);
+    });
+  });
+
   if (linkTarget) {
     const linkBtn = card.createSpan();
     linkBtn.setText('↗');
