@@ -16,7 +16,7 @@ const C = {
   text:       'var(--text-normal)',
   subtext:    'var(--text-muted)',
   accent:     'var(--text-accent)',
-  link:       '#ffffff',
+  link:       'var(--text-normal)',
   del:        'var(--text-error)',
 };
 
@@ -180,7 +180,7 @@ function renderLabel(container, text, linkColor) {
     if (m.index > last) container.appendText(text.slice(last, m.index));
     const link = container.createSpan();
     link.setText(m[2] || m[1]);
-    link.style.cssText = `color:${linkColor};text-decoration:underline;text-decoration-color:${linkColor};`;
+    link.style.cssText = `color:${linkColor};`;
     last = re.lastIndex;
   }
   if (last < text.length) container.appendText(text.slice(last));
